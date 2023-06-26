@@ -119,8 +119,8 @@ while ($row=mysqli_fetch_array($ret)) {
         <!-- /.content -->
         <div class="clearfix"></div>
         
-        <?php
         
+        <?php
         include "../phpqrcode/qrlib.php"; 
         $path = "qr_saves/";
 
