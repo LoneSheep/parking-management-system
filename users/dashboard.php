@@ -157,12 +157,12 @@ while ($row=mysqli_fetch_array($ret)) {
 
             // Authenticate with Google Cloud
             $storage = new StorageClient([
-                'projectId' => 'my-project-388313',
-                'keyFilePath' => 'my-project-388313-8d498336248d.json'
+                'projectId' => 'your-google-project-id',
+                'keyFilePath' => 'key-file-name'
             ]);
 
             // The name of the bucket you're using
-            $bucketName = 'parkingsystem2023';
+            $bucketName = 'Your-bucket-name';
 
             // Upload the file to the bucket
             $bucket = $storage->bucket($bucketName);
