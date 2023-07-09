@@ -132,7 +132,7 @@ echo '<script>alert("This email already associated with another account")</scrip
 
                         <div class="form-group">
                         <label>Vehicle License Number</label>
-                        <input type="text" name="licensenumber" placeholder="B 1234 CDE" required="true" class="form-control" pattern="[A-Z]{2}\s\d{4}\s[A-Z]{3}" title="Please enter the license number in the format 'X 1234 XYZ'">
+                        <input type="text" name="licensenumber" placeholder="B 1234 CDE" required="true" class="form-control" pattern="[A-Z]{1,2}\s\d{1,4}\s[A-Z]{1,3}" title="Please enter the license number in the format 'X 1234 XYZ'">
                         </div>
 
                         <div class="form-group">
