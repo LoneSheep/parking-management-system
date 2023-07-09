@@ -2,13 +2,55 @@
 session_start();
 error_reporting(0);
 include('includes/dbconnection.php');
+require '../vendor/autoload.php';
+
+use Google\Cloud\Storage\StorageClient;
+
+
 if (strlen($_SESSION['vpmsaid']==0)) {
   header('location:logout.php');
   } else{
-// For deleting    
-if($_GET['del']){
-$catid=$_GET['del'];
-mysqli_query($con,"delete from tblregusers where ID ='$catid'");
+      
+// For deleting
+  if(isset($_GET['del']) && !empty($_GET['del'])) {
+    $userID = $_GET['del'];
+
+    // Fetch the user's QR code image URL
+    $sql = "SELECT qrimage FROM tblregusers WHERE ID = ?";
+    $stmt = $con->prepare($sql);
+    $stmt->bind_param("i", $userID);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $user = $result->fetch_assoc();
+    $qrImage = $user['qrimage'];
+    $stmt->close();
+
+    // Parse the URL to get the file name
+    $qrImageComponents = parse_url($qrImage);
+    $qrImageFileName = basename($qrImageComponents['path']);
+
+    // Authenticate with Google Cloud
+    $storage = new StorageClient([
+        'projectId' => 'my-project-388313',
+        'keyFilePath' => 'my-project-388313-8d498336248d.json'
+    ]);
+
+    // The name of the bucket you're using
+    $bucketName = 'parkingsystem2023';
+
+    // Delete the file from the bucket
+    $bucket = $storage->bucket($bucketName);
+    $object = $bucket->object($qrImageFileName);
+    $object->delete();
+
+    // Now you can delete the user from the database
+    $sql = "DELETE FROM tblregusers WHERE ID = ?";
+    $stmt = $con->prepare($sql);
+    $stmt->bind_param("i", $userID);
+    $stmt->execute();
+    $stmt->close();
+
+    $con->close();
 echo "<script>alert('Data Deleted');</script>";
 echo "<script>window.location.href='reg-users.php'</script>";
           }
@@ -74,41 +116,40 @@ echo "<script>window.location.href='reg-users.php'</script>";
                                 <strong class="card-title">Registered Users</strong>
                             </div>
                             <div class="card-body">
-                                <input class="form-control" id="filterInput" type="text" placeholder="Search..">
+                                <input class="form-control" id="filterInput" type="text" placeholder="Search.." oninput="filterTable()">
                                 <table class="table">
                                     <thead>
                                         <tr>
-                                            <tr>
-                                                <th>NO</th>
-                                                <th>Name</th>
-                                                <th>Vehicle Registration Number</th>
-                                                <th>Position</th>
-                                                <th>Email</th>
-                                                <th>Vehicle Status</th>
-                                                <th>Action</th>
-                                            </tr>
+                                            <th>NO</th>
+                                            <th>Name</th>
+                                            <th>Vehicle Registration Number</th>
+                                            <th>Position</th>
+                                            <th>Email</th>
+                                            <th>Vehicle Status</th>
+                                            <th>Action</th>
                                         </tr>
                                     </thead>
-                                    <tbody id=output>
-                                    <?php
-                                    $ret=mysqli_query($con,"select *from  tblregusers WHERE status = 'accepted'");
-                                    $cnt=1;
-                                    while ($row=mysqli_fetch_array($ret)) {
-                                    ?>
-                                        <tr>
-                                        <td><?php echo $cnt;?></td>
-                                        <td><?php  echo $row['FirstName'];?> <?php  echo $row['LastName'];?></td>
-                                        <td><?php  echo $row['LicenseNumber'];?></td>
-                                        <td><?php  echo $row['Position'];?></td>
-                                        <td><?php  echo $row['Email'];?></td>
-                                        <td><?php  echo $row['vStatus'];?></td>
-                                        <td>
-                                            <a href="edit-users.php?id=<?php echo $row['ID'];?>" class="btn btn-primary">Edit</a>    
-                                            <a href="reg-users.php?del=<?php echo $row['ID'];?>" class="btn btn-danger" onClick="return confirm('Are you sure you want to delete?')">Delete</a>
-                                        </td>
-                                        </tr>
+                                    <tbody id="output">
+                                        <?php
+                                        $ret = mysqli_query($con, "select * from tblregusers WHERE status = 'accepted'");
+                                        $cnt = 1;
+                                        while ($row = mysqli_fetch_array($ret)) {
+                                        ?>
+                                            <tr>
+                                                <td><?php echo $cnt; ?></td>
+                                                <td><?php echo $row['FirstName']; ?> <?php echo $row['LastName']; ?></td>
+                                                <td><?php echo $row['LicenseNumber']; ?></td>
+                                                <td><?php echo $row['Position']; ?></td>
+                                                <td><?php echo $row['Email']; ?></td>
+                                                <td><?php echo $row['vStatus']; ?></td>
+                                                <td>
+                                                    <a href="edit-users.php?id=<?php echo $row['ID']; ?>" class="btn btn-primary">Edit</a>
+                                                    <a href="reg-users.php?del=<?php echo $row['ID']; ?>" class="btn btn-danger" onClick="return confirm('Are you sure you want to delete?')">Delete</a>
+                                                </td>
+                                            </tr>
+                                        <?php $cnt = $cnt + 1;
+                                        } ?>
                                     </tbody>
-                                    <?php $cnt=$cnt+1;}?>
                                 </table>
                             </div>
                         </div>
@@ -116,7 +157,7 @@ echo "<script>window.location.href='reg-users.php'</script>";
                 </div>
             </div><!-- .animated -->
         </div><!-- .content -->
-    <div class="clearfix"></div>
+        <div class="clearfix"></div>
 
 <?php include_once('includes/footer.php');?>
 
@@ -128,7 +169,32 @@ echo "<script>window.location.href='reg-users.php'</script>";
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jquery-match-height@0.7.2/dist/jquery.matchHeight.min.js"></script>
 <script src="assets/js/main.js"></script>
+<script>
+    function filterTable() {
+        // Get the input value and convert it to lowercase for case-insensitive search
+        var input = document.getElementById("filterInput").value.toLowerCase();
+        var tableRows = document.getElementById("output").getElementsByTagName("tr");
 
+        // Loop through all the table rows and hide those that don't match the search input
+        for (var i = 0; i < tableRows.length; i++) {
+            var row = tableRows[i];
+            var rowData = row.getElementsByTagName("td");
+
+            // Hide the row if the search input doesn't match any of the row's data
+            var shouldHide = true;
+            for (var j = 1; j < rowData.length - 1; j++) { // Skip the first and last columns (NO and Action)
+                var cellData = rowData[j].innerText.toLowerCase();
+                if (cellData.includes(input)) {
+                    shouldHide = false;
+                    break;
+                }
+            }
+
+            // Toggle the row's visibility based on the search input
+            row.style.display = shouldHide ? "none" : "";
+        }
+    }
+</script>
 
 </body>
 </html>

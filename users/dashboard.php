@@ -3,7 +3,6 @@ session_start();
 error_reporting(0);
 include('includes/dbconnection.php');
 require '../vendor/autoload.php';
-error_reporting(0);
 
 use Google\Cloud\Storage\StorageClient;
 
@@ -85,40 +84,77 @@ if (strlen($_SESSION['vpmsuid']==0)) {
       
         <!-- Content -->
         <div class="content">
-            <!-- Animated -->
-            <div class="animated fadeIn">
-                <!-- Widgets  -->
-                <div class="row">
-                   
-                    <div class="col-lg-12 col-md-6">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="stat-widget-five">
-                                    <?php
-$uid=$_SESSION['vpmsuid'];
-$ret=mysqli_query($con,"select * from tblregusers where ID='$uid'");
-$cnt=1;
-while ($row=mysqli_fetch_array($ret)) {
-    ?> 
+        <!-- Animated -->
+        <div class="animated fadeIn">
+            <!-- Widgets  -->
+            <div class="row">
+                <div class="col-lg-12 col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="stat-widget-five">
+                                <?php
+                                $uid=$_SESSION['vpmsuid'];
+                                $ret=mysqli_query($con,"select * from tblregusers where ID='$uid'");
+                                while ($row=mysqli_fetch_array($ret)) { ?> 
                                     <div class="stat-icon dib flat-color-1">
                                         Welcome to panel !! <?php  echo $row['FirstName'];?> <?php  echo $row['LastName'];?>
                                     </div>
-                                    <?php } ?>
+                                <?php } ?>
+                            </div>
+                        </div>
+                    </div>
+
+                    <?php
+                    // Define the total number of parking spaces
+                    $total_parking_spaces = 20;
+
+                    // Get the count from tblregusers where vStatus is 'IN'
+                    $query_regusers = mysqli_query($con, "SELECT ID FROM tblregusers WHERE vStatus = 'IN'");
+                    $active_parking_spaces_regusers = mysqli_num_rows($query_regusers);
+
+                    // Get the count from tblguest where vStatus is 'IN'
+                    $query_guests = mysqli_query($con, "SELECT ID FROM tblguest WHERE vStatus = 'IN'");
+                    $active_parking_spaces_guests = mysqli_num_rows($query_guests);
+
+                    // Calculate the total number of active parking spaces
+                    $total_active_parking_spaces = $active_parking_spaces_regusers + $active_parking_spaces_guests;
+
+                    // Calculate the number of available parking spaces
+                    $available_parking_spaces = $total_parking_spaces - $total_active_parking_spaces;
+
+                    ?>
+
+                    <div class="col-lg-3 col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="stat-widget-five">
+                                    <div class="stat-icon dib flat-color-1">
+                                        <i class="pe-7s-car"></i>
+                                    </div>
+                                    <div class="stat-content">
+                                        <div class="text-left dib">
+                                            <div class="stat-text">
+                                                
+                                                    <?php echo $total_active_parking_spaces . '/' . $total_parking_spaces; ?>
+                                                
+                                            </div>
+                                            <div class="stat-heading">Parking Occupied/Total</div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-
                 </div>
-                <!-- /Widgets -->
-               
             </div>
-            <!-- .animated -->
+            <!-- /Widgets -->      
         </div>
+        <!-- .animated -->
+    </div>
+
         <!-- /.content -->
         <div class="clearfix"></div>
-        
+
         
         <?php
         include "../phpqrcode/qrlib.php"; 
@@ -170,6 +206,9 @@ while ($row=mysqli_fetch_array($ret)) {
                 fopen($file, 'r')
             );
 
+            // Delete the file from local system
+            unlink($file);
+
             // Generate a public URL for the object
             $qrImage = sprintf('https://storage.googleapis.com/%s/%s', $bucketName, $filename);
 
@@ -195,6 +234,7 @@ while ($row=mysqli_fetch_array($ret)) {
         echo "<center><img src='".$qrImage."'></center>";
 
         ?>
+
 
         <!-- Footer -->
         <?php include_once('includes/footer.php');?>

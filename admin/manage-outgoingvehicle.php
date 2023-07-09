@@ -68,6 +68,33 @@ echo "<script>window.location.href='manage-outgoingvehicle.php'</script>";
             </div>
         </div>
 
+        <?php
+        $query = "(SELECT 
+            FirstName AS 'Name', 
+            LastName,
+            LicenseNumber,
+            vStatus,
+            InTime,
+            OutTime
+        FROM tblregusers
+        WHERE vStatus = 'OUT')
+
+        UNION ALL
+
+        (SELECT 
+            Name, 
+            '' AS 'LastName',
+            LicenseNumber,
+            vStatus,
+            InTime,
+            OutTime
+        FROM tblguest
+        WHERE vStatus = 'OUT')";
+
+        $ret = mysqli_query($con, $query);
+        $cnt = 1;
+        ?>
+
         <div class="content">
             <div class="animated fadeIn">
                 <div class="row">
@@ -80,31 +107,31 @@ echo "<script>window.location.href='manage-outgoingvehicle.php'</script>";
                             <table class="table">
                                 <thead>
                                     <tr>
-                                        <tr>
-                                            <th>NO</th>
-                                            <th>Owner Name</th>
-                                            <th>Vehicle Reg Number</th>
-                                            <th>Time In</th>
-                                            <th>Time Out</th>
-                                        </tr>
+                                        <th>NO</th>
+                                        <th>Owner Name</th>
+                                        <th>Vehicle Reg Number</th>
+                                        <th>Time In</th>
+                                        <th>Time Out</th>
                                     </tr>
                                 </thead>
-                                <?php $ret=mysqli_query($con,"select *from tblregusers where vStatus='OUT'"); $cnt=1; while ($row=mysqli_fetch_array($ret)) {?>
-                                    <tr>
-                                        <td><?php echo $cnt;?></td>
-                                        <td><?php  echo $row['FirstName'];?> <?php  echo $row['LastName'];?></td>
-                                        <td><?php  echo $row['LicenseNumber'];?></td>
-                                        <td><?php  echo $row['InTime'];?></td>
-                                        <td><?php  echo $row['OutTime'];?></td>
-                                    </tr>
-                                    <?php $cnt=$cnt+1;}?>
+                                <tbody>
+                                    <?php while ($row = mysqli_fetch_array($ret)) {?>
+                                        <tr>
+                                            <td><?php echo $cnt;?></td>
+                                            <td><?php echo trim($row['Name']." ".$row['LastName']);?></td>
+                                            <td><?php echo $row['LicenseNumber'];?></td>
+                                            <td><?php echo $row['InTime'];?></td>
+                                            <td><?php echo $row['OutTime'];?></td>
+                                        </tr>
+                                        <?php $cnt = $cnt+1; } ?>
+                                </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
             </div>
         </div><!-- .animated -->
-    </div><!-- .content -->
+        </div><!-- .content -->
 
 <div class="clearfix"></div>
 

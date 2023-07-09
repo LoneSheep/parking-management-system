@@ -22,6 +22,7 @@ if (strlen($_SESSION['vpmsaid']==0)) {
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.0/normalize.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lykmapipo/themify-icons@0.1.2/css/themify-icons.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pixeden-stroke-7-icon@1.2.3/pe-icon-7-stroke/dist/pe-icon-7-stroke.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.2.0/css/flag-icon.min.css">
@@ -84,57 +85,71 @@ if (strlen($_SESSION['vpmsaid']==0)) {
             <div class="animated fadeIn">
                 <!-- Widgets  -->
                 <div class="row">
+                <?php
+                // Get the count from tblregusers where vStatus is 'IN'
+                $query_regusers = mysqli_query($con, "SELECT ID FROM tblregusers WHERE vStatus = 'IN'");
+                $count_incoming_vehentries_regusers = mysqli_num_rows($query_regusers);
+
+                // Get the count from tblguest where vStatus is 'IN'
+                $query_guests = mysqli_query($con, "SELECT ID FROM tblguest WHERE vStatus = 'IN'");
+                $count_incoming_vehentries_guests = mysqli_num_rows($query_guests);
+
+                // Calculate the total number of incoming vehicles
+                $total_incoming_vehicles = $count_incoming_vehentries_regusers + $count_incoming_vehentries_guests;
+                ?>
+                <div class="col-lg-3 col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="stat-widget-five">
+                                <div class="stat-icon dib flat-color-1">
+                                    <i class="pe-7s-car"></i>
+                                </div>
+                                <div class="stat-content">
+                                    <div class="text-left dib">
+                                        <div class="stat-text"><span class="count"><?php echo $total_incoming_vehicles;?></span></div>
+                                        <div class="stat-heading">Vehicle Incoming</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6">
                     <?php
-//todays Vehicle Entries
- $query=mysqli_query($con,"select ID from tblregusers where vStatus='IN'");
-$count_today_vehentries=mysqli_num_rows($query);
- ?>
-                    <div class="col-lg-3 col-md-6">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="stat-widget-five">
-                                    <div class="stat-icon dib flat-color-1">
-                                        <i class="pe-7s-car"></i>
-                                    </div>
-                                    <div class="stat-content">
-                                        <div class="text-left dib">
-                                            <div class="stat-text"><span class="count"><?php echo $count_today_vehentries;?></span></div>
-                                            <div class="stat-heading">Vehicle Incoming</div>
-                                        </div>
+                    // Get the count from tblregusers where vStatus is 'OUT'
+                    $query_regusers_out = mysqli_query($con, "SELECT ID FROM tblregusers WHERE vStatus = 'OUT'");
+                    $count_outgoing_vehentries_regusers = mysqli_num_rows($query_regusers_out);
+
+                    // Get the count from tblguest where vStatus is 'OUT'
+                    $query_guests_out = mysqli_query($con, "SELECT ID FROM tblguest WHERE vStatus = 'OUT'");
+                    $count_outgoing_vehentries_guests = mysqli_num_rows($query_guests_out);
+
+                    // Calculate the total number of outgoing vehicles
+                    $total_outgoing_vehicles = $count_outgoing_vehentries_regusers + $count_outgoing_vehentries_guests;
+                    ?>
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="stat-widget-five">
+                                <div class="stat-icon dib flat-color-4">
+                                    <i class="pe-7s-car"></i>
+                                </div>
+                                <div class="stat-content">
+                                    <div class="text-left dib">
+                                        <div class="stat-text"><span class="count"><?php echo $total_outgoing_vehicles;?></span></div>
+                                        <div class="stat-heading">Vehicle Outgoing</div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <div class="col-lg-3 col-md-6">
-                        <?php
-//Total Vehicle Entries
- $query3=mysqli_query($con,"select ID from tblregusers where vStatus='OUT'");
-$count_total_vehentries=mysqli_num_rows($query3);
- ?>
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="stat-widget-five">
-                                    <div class="stat-icon dib flat-color-4">
-                                        <i class="pe-7s-car"></i>
-                                    </div>
-                                    <div class="stat-content">
-                                        <div class="text-left dib">
-                                            <div class="stat-text"><span class="count"><?php echo $count_total_vehentries?></span></div>
-                                            <div class="stat-heading">Vehicle Outgoing</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <?php
 
-           <?php
-//total Registered Users
- $query=mysqli_query($con,"select ID from tblregusers");
-$regdusers=mysqli_num_rows($query);
- ?>
+                $query=mysqli_query($con,"select ID from tblregusers");
+                $regdusers=mysqli_num_rows($query);
+                ?>
                     <div class="col-lg-3 col-md-6">
                         <div class="card">
                             <div class="card-body">

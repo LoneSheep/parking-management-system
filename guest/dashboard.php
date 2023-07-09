@@ -1,37 +1,47 @@
 <?php
-session_start(); 
+
 include('includes/dbconnection.php');
 require '../vendor/autoload.php';
-error_reporting(0);
+
 
 use Google\Cloud\Storage\StorageClient;
 
-if (!isset($_SESSION['vpmsaid'])) {
-    // If the user isn't logged in, check if a guest user session is set.
-    if (isset($_SESSION['guestId'])) {
-        // If a guest user session is set, retrieve the guest user's ID from the session.
-        $_SESSION['vpmsaid'] = $_SESSION['guestId'];
-        $_SESSION['vpmstitle'] = 'Guest';
+// Check if a 'guestId' cookie is set
+if (isset($_COOKIE['guestId'])) {
+    // Retrieve the guestId from the cookie
+    $guestId = $_COOKIE['guestId'];
+
+    // Check if a guest with this ID exists in the database
+    $guestQuery = mysqli_query($con, "SELECT * FROM tblguest WHERE ID = '$guestId'");
+    $guest = mysqli_fetch_array($guestQuery);
+    
+    if ($guest) {
+        echo "Cookie 'guestId' is set!<br>";
+        echo "Value is: " . $guestId;
     } else {
-        // If no guest user session is set, create a new guest user.
-        $name = 'Guest User ' . rand(1000, 9999);
-        $licenseNumber = rand(100000, 999999);
-        $guestInsertQuery = mysqli_query($con, "INSERT INTO tblguest (Name, LicenseNumber) VALUES ('$name', '$licenseNumber')");
-
-        if ($guestInsertQuery) {
-            // If the guest user was inserted successfully, retrieve the ID of the newly created guest user.
-            $guestId = mysqli_insert_id($con);
-
-            // Set the session variables.
-            $_SESSION['vpmsaid'] = $guestId;
-            $_SESSION['vpmstitle'] = 'Guest';
-            $_SESSION['guestId'] = $guestId;
-
-        } else {
-            echo "<script>alert('Something went wrong. Please try again.');</script>";
-        }
+        echo "<script>alert('Invalid guest ID.');</script>";
+        echo "Cookie 'guestId' is not set!";
     }
-  } else{ ?>
+} else {
+    // Create a new guest user
+    $name = 'Guest User ' . rand(1, 9999);
+    $guestInsertQuery = mysqli_query($con, "INSERT INTO tblguest (Name, LicenseNumber) VALUES ('$name', '$licenseNumber')");
+
+    if ($guestInsertQuery) {
+        // If the guest user was inserted successfully, retrieve the ID of the newly created guest user
+        $guestId = mysqli_insert_id($con);
+        
+        echo "Guest user created with ID: " . $guestId;
+
+        // Set a cookie that expires in one day
+        setcookie('guestId', $guestId, time() + (24 * 60 * 60), "/");
+    } else {
+        echo "<script>alert('Something went wrong. Please try again.');</script>";
+        echo "Cookie 'guestId' is not set!";
+    }
+}
+
+?>
 
 
 <!doctype html>
@@ -100,7 +110,7 @@ if (!isset($_SESSION['vpmsaid'])) {
 
 <body>
     
-   <?php include_once('includes/sidebar.php');?>
+   
 
         <?php include_once('includes/header.php');?>
       
@@ -115,7 +125,7 @@ if (!isset($_SESSION['vpmsaid'])) {
                             <div class="card-body">
                                 <div class="stat-widget-five">
                                     <?php
-                                    $uid=$_SESSION['vpmsuid'];
+                                    $uid=$_SESSION['vpmsaid'];
                                     $ret=mysqli_query($con,"select * from tblguest where ID='$uid'");
                                     $cnt=1;
                                     while ($row=mysqli_fetch_array($ret)) {
@@ -139,77 +149,83 @@ if (!isset($_SESSION['vpmsaid'])) {
         <div class="clearfix"></div>
         
         <?php
-        include "../phpqrcode/qrlib.php"; 
-        $path = "qr_saves/";
 
-        // Get user ID from session
-        $userID = $_SESSION['vpmsuid'];
+        if (isset($guestId)) {
 
-        // Fetch guest user's name and qrimage from the database
-        $sql = "SELECT Name, qrimage FROM tblguest WHERE ID = ?";
-        $stmt = $con->prepare($sql);
-        $stmt->bind_param("i", $userID);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $user = $result->fetch_assoc();
-        $userName = $user['Name'];
-        $qrImage = $user['qrimage'];
-        $stmt->close();
+            include "../phpqrcode/qrlib.php"; 
+            $path = "qr_saves/";
 
-        // If the user doesn't already have a QR image
-        if (empty($qrImage)) {
+            // Generate a random token
+            $token = bin2hex(random_bytes(16)); // 16 bytes = 128 bits
 
-            $text = 'https://youtube.com/?uid=' . $userID . '&name=' . $userName; 
-            $filename = uniqid().".png";
-            $file = $path.$filename;
-            $ecc = 'H';
-            $pixel_Size = 10;
-            $frame_Size = 10;
+            // Fetch user's qrimage from the database
+            $sql = "SELECT qrimage FROM tblguest WHERE ID = ?";
+            $stmt = $con->prepare($sql);
+            $stmt->bind_param("i", $guestId);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $user = $result->fetch_assoc();
+            $qrImage = $user['qrimage'];
+            $stmt->close();
 
-            if (!file_exists($path)) {
-                mkdir($path);
+            // If the user doesn't already have a QR image
+            if (empty($qrImage)) {
+                $text = $token; 
+                $filename = uniqid().".png";
+                $file = $path.$filename;
+                $ecc = 'H';
+                $pixel_Size = 10;
+                $frame_Size = 10;
+
+                if (!file_exists($path)) {
+                    mkdir($path);
+                }
+
+                QRcode::png($text, $file, $ecc, $pixel_Size, $frame_Size);
+
+                // Authenticate with Google Cloud
+                $storage = new StorageClient([
+                    'projectId' => 'my-project-388313',
+                    'keyFilePath' => 'my-project-388313-8d498336248d.json'
+                ]);
+
+                // The name of the bucket you're using
+                $bucketName = 'parkingsystem2023';
+
+                // Upload the file to the bucket
+                $bucket = $storage->bucket($bucketName);
+                $bucket->upload(
+                    fopen($file, 'r')
+                );
+
+                // Delete the file from local system
+                unlink($file);
+
+                // Generate a public URL for the object
+                $qrImage = sprintf('https://storage.googleapis.com/%s/%s', $bucketName, $filename);
+
+                // prepare sql statement
+                $sql = "UPDATE tblguest SET qrimage = ?, token = ? WHERE ID = ?";
+
+                // create a prepared statement
+                $stmt = $con->prepare($sql);
+
+                // bind parameters
+                $stmt->bind_param("ssi", $qrImage, $token, $guestId);
+
+                // execute the query
+                $stmt->execute();
+
+                // close the statement
+                $stmt->close();
             }
 
-            QRcode::png($text, $file, $ecc, $pixel_Size, $frame_Size);
+            // close the connection
+            $con->close();
 
-            // Authenticate with Google Cloud
-            $storage = new StorageClient([
-                'projectId' => 'my-project-388313',
-                'keyFilePath' => 'my-project-388313-8d498336248d.json'
-            ]);
-
-            // The name of the bucket you're using
-            $bucketName = 'parkingsystem2023';
-
-            // Upload the file to the bucket
-            $bucket = $storage->bucket($bucketName);
-            $bucket->upload(
-                fopen($file, 'r')
-            );
-
-            // Generate a public URL for the object
-            $qrImage = sprintf('https://storage.googleapis.com/%s/%s', $bucketName, $filename);
-
-            // prepare sql statement
-            $sql = "UPDATE tblguest SET qrimage = ? WHERE ID = ?";
-
-            // create a prepared statement
-            $stmt = $con->prepare($sql);
-
-            // bind parameters
-            $stmt->bind_param("si", $qrImage, $userID);
-
-            // execute the query
-            $stmt->execute();
-
-            // close the statement
-            $stmt->close();
+            echo "<center><img src='".$qrImage."'></center>";
         }
 
-        // close the connection
-        $con->close();
-
-        echo "<center><img src='".$qrImage."'></center>";
         ?>
 
         <!-- Footer -->
@@ -437,4 +453,3 @@ if (!isset($_SESSION['vpmsaid'])) {
     </script>
 </body>
 </html>
-<?php } ?>

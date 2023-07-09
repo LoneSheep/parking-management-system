@@ -122,7 +122,7 @@ echo '<script>alert("This email already associated with another account")</scrip
 
                         <div class="form-group" id="NIP" style="display: none;">
                         <label>NIP</label>
-                        <input type="number" name="nip" placeholder="NIP" maxlength="11" class="form-control" maxlength="18">
+                        <input type="number" name="nip" placeholder="NIP" maxlength="18" class="form-control">
                         </div>
 
                         <div class="form-group" id="NIM" style="display: none;">
@@ -131,8 +131,8 @@ echo '<script>alert("This email already associated with another account")</scrip
                         </div>
 
                         <div class="form-group">
-                            <label>Vehicle License Number</label>
-                           <input type="text" name="licensenumber" placeholder="Vehicle license number" required="true" class="form-control">
+                        <label>Vehicle License Number</label>
+                        <input type="text" name="licensenumber" placeholder="B 1234 CDE" required="true" class="form-control" pattern="[A-Z]{2}\s\d{4}\s[A-Z]{3}" title="Please enter the license number in the format 'X 1234 XYZ'">
                         </div>
 
                         <div class="form-group">

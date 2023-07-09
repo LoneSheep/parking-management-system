@@ -15,10 +15,6 @@
                         </li>
 
                         </ul>
-                    </li>
-<li>
-                        <a href="search-vehicle.php"> <i class="menu-icon fa fa-search"></i>Search Vehicle </a>
-                    </li>
                     <li>
                         <a href="approve-users.php"> <i class="menu-icon ti-user"></i>Users Approval </a>
                     </li>

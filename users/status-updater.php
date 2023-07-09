@@ -2,26 +2,52 @@
 // connect to database
 include('includes/dbconnection.php');
 
-// Set the date you want
-$setDate = '2024-06-01'; 
+// Include the Cloud Storage library.
+require '../vendor/autoload.php';
+use Google\Cloud\Storage\StorageClient;
 
-// sql to update status from 'accepted' to 'pending' for users with "Mahasiswa" position and registered before $setDate
-$sql = "UPDATE tblregusers SET status = 'pending' WHERE RegDate <= ? AND status = 'accepted' AND Position = 'Mahasiswa'";
+// Cloud Storage settings
+$projectId = 'my-project-id';
+$keyFilePath = 'path/to/your/keyfile.json';
+$bucketName = 'parkingsystem2023';
 
-// create a prepared statement
-$stmt = $con->prepare($sql);
+// Create a Cloud Storage client.
+$storage = new StorageClient([
+    'projectId' => $projectId,
+    'keyFilePath' => $keyFilePath
+]);
 
-// bind parameters
-$stmt->bind_param("s", $setDate);
+// Get the bucket
+$bucket = $storage->bucket($bucketName);
+
+// sql to select all "Mahasiswa" users
+$sql = "SELECT * FROM tblregusers WHERE Position = 'Mahasiswa'";
 
 // execute the query
-$stmt->execute();
+$result = $con->query($sql);
 
-// check if the query was successful
-if($stmt->affected_rows > 0) {
-  echo "Status updated successfully.";
-} else {
-  echo "No status updates needed.";
+// loop through each "Mahasiswa" user
+while($row = $result->fetch_assoc()) {
+    $qrimage = $row['qrimage'];
+
+    // remove the Cloud Storage URL prefix to get object name
+    $objectName = str_replace('https://storage.googleapis.com/'.$bucketName.'/', '', $qrimage);
+
+    // Delete the object from Cloud Storage
+    $object = $bucket->object($objectName);
+    $object->delete();
+
+    // prepare sql statement to set qrimage value to NULL for this user
+    $sql = "UPDATE tblregusers SET qrimage = NULL WHERE ID = ?";
+
+    // create a prepared statement
+    $stmt = $con->prepare($sql);
+
+    // bind parameters
+    $stmt->bind_param("i", $row['ID']);
+
+    // execute the query
+    $stmt->execute();
 }
 
 // close the statement
@@ -29,4 +55,7 @@ $stmt->close();
 
 // close the connection
 $con->close();
+
+echo "QR codes deleted and qrimage values removed successfully.";
+
 ?>
