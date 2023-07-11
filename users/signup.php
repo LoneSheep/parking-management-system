@@ -9,8 +9,8 @@ if(isset($_POST['submit']))
     $lname=$_POST['lastname'];
     $licensenumber=$_POST['licensenumber'];
     $position=$_POST['position'];
-    $nip=isset($_POST['nip'])?$_POST['nip']:"";
-    $nim=isset($_POST['nim'])?$_POST['nim']:"";
+    $nip = isset($_POST['nip']) && !empty($_POST['nip']) ? $_POST['nip'] : NULL;
+    $nim = isset($_POST['nim']) && !empty($_POST['nim']) ? $_POST['nim'] : NULL;
     $email=$_POST['email'];
     $password=md5($_POST['password']);
     $ret=mysqli_query($con, "select Email from tblregusers where Email='$email'");
