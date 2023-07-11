@@ -1,10 +1,19 @@
 <?php
+
+// Turn on all error reporting
+error_reporting(E_ALL);
+
+// Alternatively you can use ini_set
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 session_start();
-error_reporting(0);
+//error_reporting(0);
 include('includes/dbconnection.php');
 
 if(isset($_POST['submit']))
-  {
+{
     $fname=$_POST['firstname'];
     $lname=$_POST['lastname'];
     $licensenumber=$_POST['licensenumber'];
@@ -16,22 +25,22 @@ if(isset($_POST['submit']))
     $ret=mysqli_query($con, "select Email from tblregusers where Email='$email'");
     $result=mysqli_fetch_array($ret);
     if($result>0){
-
-echo '<script>alert("This email already associated with another account")</script>';
+        echo '<script>alert("This email already associated with another account")</script>';
     }
     else{
-        $query=mysqli_query($con, "insert into tblregusers(FirstName, LastName, LicenseNumber, Position, NIP, NIM, Email, Password, status) value('$fname', '$lname','$licensenumber','$position','$nip','$nim', '$email', '$password', 'pending')");
-    if ($query) {
-    
-    echo '<script>alert("You have successfully registered")</script>';
-  }
-  else
-    {
-      echo '<script>alert("Something Went Wrong. Please try again")</script>';
-      echo "Error: " . mysqli_error($con);
+        $query=mysqli_prepare($con, "insert into tblregusers(FirstName, LastName, LicenseNumber, Position, NIP, NIM, Email, Password, status) value(?, ?, ?, ?, ?, ?, ?, ?, 'pending')");
+        $query->bind_param("ssssisss", $fname, $lname, $licensenumber, $position, $nip, $nim, $email, $password);
+        $query->execute();
+        if ($query->affected_rows > 0) {
+            echo '<script>alert("You have successfully registered")</script>';
+        }
+        else {
+            echo '<script>alert("Something Went Wrong. Please try again")</script>';
+            echo "Error: " . mysqli_error($con);
+        }
     }
 }
-}
+
   ?>
 <!doctype html>
  <html class="no-js" lang="">
