@@ -1,8 +1,7 @@
 <?php
-
 include('includes/dbconnection.php');
 require '../vendor/autoload.php';
-
+error_reporting(0);
 
 use Google\Cloud\Storage\StorageClient;
 
@@ -164,9 +163,17 @@ if (isset($_COOKIE['guestId'])) {
             $stmt->bind_param("i", $guestId);
             $stmt->execute();
             $result = $stmt->get_result();
-            $user = $result->fetch_assoc();
-            $qrImage = $user['qrimage'];
+
+            if ($result->num_rows > 0) {
+                $user = $result->fetch_assoc();
+                $qrImage = $user['qrimage'];
+            } else {
+                $qrImage = null; // Or any default value you want
+            }
             $stmt->close();
+
+// Continue with your code...
+
 
             // If the user doesn't already have a QR image
             if (empty($qrImage)) {
