@@ -49,7 +49,8 @@ if (isset($_COOKIE['guestId'])) {
 <head>
     
     <title>VPMS - User Dashboard</title>
-   
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
 
     <link rel="apple-touch-icon" href="https://i.imgur.com/QRAUqs9.png">
     <link rel="shortcut icon" href="https://i.imgur.com/QRAUqs9.png">
@@ -172,7 +173,7 @@ if (isset($_COOKIE['guestId'])) {
             }
             $stmt->close();
 
-// Continue with your code...
+
 
 
             // If the user doesn't already have a QR image

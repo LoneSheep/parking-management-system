@@ -22,6 +22,7 @@ echo "<script>window.location.href='manage-incomingvehicle.php'</script>";
 <head>
    
     <title>VPMS - Manage Incoming Vehicle</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.0/normalize.min.css">

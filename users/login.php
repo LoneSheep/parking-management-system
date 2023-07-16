@@ -34,7 +34,8 @@ if(isset($_POST['login'])) {
 <head>
     
     <title>VPMS-Login Page</title>
-   
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
 
     <link rel="apple-touch-icon" href="https://i.imgur.com/QRAUqs9.png">
     <link rel="shortcut icon" href="https://i.imgur.com/QRAUqs9.png">

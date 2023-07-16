@@ -63,6 +63,8 @@ echo "<script>window.location.href='reg-users.php'</script>";
 <head>
    
     <title>VPMS - Manage Category</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.0/normalize.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css">
