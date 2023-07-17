@@ -3,7 +3,7 @@
                 <div class="row">
                    
                     <div class="col-sm-12 text-center">
-                        Vehicle Parking Management System
+                        PNJ Parking Management System
                     </div>
                 </div>
             </div>

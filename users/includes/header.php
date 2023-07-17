@@ -2,7 +2,7 @@
 <header id="header" class="header">
             <div class="top-left">
                 <div class="navbar-header" style="padding-top: 20px;color: blue;">
-                    <strong >VPMS Users</strong>
+                    <strong >Users</strong>
                 </div>
             </div>
             <div class="top-right">

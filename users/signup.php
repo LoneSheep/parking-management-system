@@ -99,9 +99,7 @@ if(isset($_POST['submit']))
         <div class="container">
             <div class="login-content">
                 <div class="login-logo">
-                    <a href="index.php">
-                        <h2 style="color: #fff">VPMS!! Create Your account</h2>
-                    </a>
+                        <h2 style="color: #fff">Register Account</h2>
                 </div>
 
                 <div class="login-form">

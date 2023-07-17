@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         
-        <title>Vehicle Parking Management System|| Home Page</title>
+        <title>PNJ Parking Management System|| Home Page</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <!-- Font Awesome icons (free version)-->
@@ -17,7 +17,7 @@
         <!-- Navigation-->
         <nav class="navbar navbar-expand-lg bg-secondary text-uppercase fixed-top" id="mainNav">
             <div class="container">
-                <a class="navbar-brand" href="index.php">Vehicle Parking Management System</a>
+                <a class="navbar-brand" href="index.php">PNJ Parking Management System</a>
                 <button class="navbar-toggler text-uppercase font-weight-bold bg-primary text-white rounded" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
                     Menu
                     <i class="fas fa-bars"></i>
@@ -35,9 +35,9 @@
         <header class="masthead bg-primary text-white text-center">
             <div class="container d-flex align-items-center flex-column">
                 <!-- Masthead Avatar Image-->
-                <img class="masthead-avatar mb-5" src="assets/img/images.jpg" alt="..." />
+                <img class="masthead-avatar mb-5" src="assets/img/motorbike.png" alt="..." />
                 <!-- Masthead Heading-->
-                <h1 class="masthead-heading text-uppercase mb-0">Vehicle Parking Management System</h1>
+                <h1 class="masthead-heading text-uppercase mb-0">PNJ Parking Management System</h1>
                 <!-- Icon Divider-->
                 <div class="divider-custom divider-light">
                     <div class="divider-custom-line"></div>
@@ -54,7 +54,7 @@
       
         <!-- Copyright Section-->
         <div class="copyright py-4 text-center text-white">
-            <div class="container"><small>Vehicle Parking Management System @ 2022</small></div>
+            <div class="container"><small>PNJ Parking Management System @ 2023</small></div>
         </div>
         <!-- Bootstrap core JS-->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>

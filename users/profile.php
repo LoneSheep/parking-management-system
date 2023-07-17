@@ -47,7 +47,7 @@ echo '<script>window.location.href=profile.php</script>';
 
 </head>
 <body>
-   <?php include_once('includes/sidebar.php');?>
+   
     <!-- Right Panel -->
 
    <?php include_once('includes/header.php');?>
@@ -114,10 +114,6 @@ while ($row=mysqli_fetch_array($ret)) {
                                     <div class="row form-group">
                                         <div class="col col-md-3"><label for="email-input" class=" form-control-label">Last Name</label></div>
                                         <div class="col-12 col-md-9"><input type="text" name="lastname" required="true" class="form-control" value="<?php  echo $row['LastName'];?>"></div>
-                                    </div>
-                                    <div class="row form-group">
-                                        <div class="col col-md-3"><label for="password-input" class=" form-control-label">Contact Number</label></div>
-                                        <div class="col-12 col-md-9"> <input type="text" name="mobilenumber" maxlength="10" pattern="[0-9]{10}" readonly="true" class="form-control" value="<?php  echo $row['MobileNumber'];?>"></div>
                                     </div>
                                     <div class="row form-group">
                                         <div class="col col-md-3"><label for="disabled-input" class=" form-control-label">Email address</label></div>

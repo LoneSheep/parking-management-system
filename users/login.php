@@ -59,16 +59,14 @@ if(isset($_POST['login'])) {
         <div class="container">
             <div class="login-content">
                 <div class="login-logo">
-                    <a href="index.php">
-                        <h2 style="color: #fff">VPMS!! Sign in</h2>
-                    </a>
+                        <h2 style="color: #fff">Sign in</h2>
                 </div>
                 <div class="login-form">
                     <form method="post">
                          
                         <div class="form-group">
-                            <label>Registered Email or Contact Number</label>
-                           <input type="text" name="emailcont" required="true" placeholder="Registered Email" required="true" class="form-control">
+                            <label>Email</label>
+                           <input type="text" name="emailcont" required="true" placeholder="Email" required="true" class="form-control">
                         </div>
                         <div class="form-group">
                             <label>Password</label>
@@ -77,7 +75,7 @@ if(isset($_POST['login'])) {
                         <div class="checkbox">
                             
                             <label class="pull-right">
-                                <a href="forgot-password.php">Forgotten Password?</a>
+                                <a href="forgot-password.php">Forgot Password?</a>
                             </label>
 
                         </div>
@@ -86,7 +84,7 @@ if(isset($_POST['login'])) {
                        <div class="checkbox" style="padding-bottom: 20px;padding-top: 20px;">
                             
                             <label class="pull-left" >
-                                <a href="signup.php">Signup(Register yourself)</a>
+                                <a href="signup.php">Sign Up</a>
                             </label>
 
                         </div>

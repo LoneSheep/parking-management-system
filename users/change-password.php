@@ -62,7 +62,7 @@ return true;
 
 </head>
 <body>
-   <?php include_once('includes/sidebar.php');?>
+   
     <!-- Right Panel -->
 
    <?php include_once('includes/header.php');?>

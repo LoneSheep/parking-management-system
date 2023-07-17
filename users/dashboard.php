@@ -17,7 +17,7 @@ if (strlen($_SESSION['vpmsuid']==0)) {
  <html class="no-js" lang="">
 <head>
     
-    <title>VPMS - User Dashboard</title>
+    <title> User Dashboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
 
@@ -79,7 +79,7 @@ if (strlen($_SESSION['vpmsuid']==0)) {
 
 <body>
     
-   <?php include_once('includes/sidebar.php');?>
+   
 
         <?php include_once('includes/header.php');?>
       
@@ -98,7 +98,7 @@ if (strlen($_SESSION['vpmsuid']==0)) {
                                 $ret=mysqli_query($con,"select * from tblregusers where ID='$uid'");
                                 while ($row=mysqli_fetch_array($ret)) { ?> 
                                     <div class="stat-icon dib flat-color-1">
-                                        Welcome to panel !! <?php  echo $row['FirstName'];?> <?php  echo $row['LastName'];?>
+                                        Welcome <?php  echo $row['FirstName'];?> <?php  echo $row['LastName'];?>
                                     </div>
                                 <?php } ?>
                             </div>

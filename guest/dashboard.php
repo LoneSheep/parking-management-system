@@ -119,27 +119,47 @@ if (isset($_COOKIE['guestId'])) {
             <!-- Animated -->
             <div class="animated fadeIn">
                 <!-- Widgets  -->
-                <div class="row">
-                    <div class="col-lg-12 col-md-6">
+                <?php
+                    // Define the total number of parking spaces
+                    $total_parking_spaces = 20;
+
+                    // Get the count from tblregusers where vStatus is 'IN'
+                    $query_regusers = mysqli_query($con, "SELECT ID FROM tblregusers WHERE vStatus = 'IN'");
+                    $active_parking_spaces_regusers = mysqli_num_rows($query_regusers);
+
+                    // Get the count from tblguest where vStatus is 'IN'
+                    $query_guests = mysqli_query($con, "SELECT ID FROM tblguest WHERE vStatus = 'IN'");
+                    $active_parking_spaces_guests = mysqli_num_rows($query_guests);
+
+                    // Calculate the total number of active parking spaces
+                    $total_active_parking_spaces = $active_parking_spaces_regusers + $active_parking_spaces_guests;
+
+                    // Calculate the number of available parking spaces
+                    $available_parking_spaces = $total_parking_spaces - $total_active_parking_spaces;
+
+                    ?>
+
+                    <div class="col-lg-3 col-md-6">
                         <div class="card">
                             <div class="card-body">
                                 <div class="stat-widget-five">
-                                    <?php
-                                    $uid=$_SESSION['vpmsaid'];
-                                    $ret=mysqli_query($con,"select * from tblguest where ID='$uid'");
-                                    $cnt=1;
-                                    while ($row=mysqli_fetch_array($ret)) {
-                                    ?> 
                                     <div class="stat-icon dib flat-color-1">
-                                        Welcome to panel !! <?php  echo $row['Name'];?>
+                                        <i class="pe-7s-car"></i>
                                     </div>
-                                    <?php } ?>
+                                    <div class="stat-content">
+                                        <div class="text-left dib">
+                                            <div class="stat-text">
+                                                
+                                                    <?php echo $total_active_parking_spaces . '/' . $total_parking_spaces; ?>
+                                                
+                                            </div>
+                                            <div class="stat-heading">Parking Occupied/Total</div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
                 <!-- /Widgets -->
                
             </div>
