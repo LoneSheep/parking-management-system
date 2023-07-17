@@ -60,9 +60,7 @@ return true;
         <div class="container">
             <div class="login-content">
                 <div class="login-logo">
-                    <a href="index.php">
-                       <h2 style="color: green">Vehicle Parking Management System</h2>
-                    </a>
+                    <h2 style="color: green">PNJ Parking Management System</h2>
                 </div>
                 <div class="login-form">
                     <form action="" method="post" name="changepassword" onsubmit="return checkpass();">
@@ -80,7 +78,7 @@ return true;
                         <div class="checkbox">
                             
                             <label class="pull-right">
-                                <a href="index.php">Signin</a>
+                                <a href="index.php">Sign In</a>
                             </label>
 
                         </div>

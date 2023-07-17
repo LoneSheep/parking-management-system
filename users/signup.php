@@ -136,7 +136,7 @@ if(isset($_POST['submit']))
 
                         <div class="form-group">
                         <label>Vehicle License Number</label>
-                        <input type="text" name="licensenumber" placeholder="B 1234 CDE" required="true" class="form-control" pattern="[A-Z]{1,2}\s\d{1,4}\s[A-Z]{1,3}" title="Please enter the license number in the format 'X 1234 XYZ'">
+                        <input type="text" name="licensenumber" placeholder="X 1234 XYZ" required="true" class="form-control" pattern="[A-Z]{1,2}\s\d{1,4}\s[A-Z]{1,3}" title="Please enter the license number in the format 'X 1234 XYZ'">
                         </div>
 
                         <div class="form-group">
@@ -156,7 +156,7 @@ if(isset($_POST['submit']))
                         <div class="checkbox">
                             
                             <label class="pull-right">
-                                <a href="forgot-password.php">Forgotten Password?</a>
+                                <a href="forgot-password.php">Forgot Password?</a>
                             </label>
                             <label class="pull-left">
                                 <a href="login.php">Signin</a>

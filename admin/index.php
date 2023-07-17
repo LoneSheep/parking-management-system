@@ -49,9 +49,7 @@ if(isset($_POST['login']))
         <div class="container">
             <div class="login-content">
                 <div class="login-logo">
-                    <a href="index.php">
-                        <h2 style="color: #fff">Vehicle Parking Management System</h2>
-                    </a>
+                    <h2 style="color: #fff">PNJ Parking Management System</h2>
                 </div>
                 <div class="login-form">
                     <form method="post">
@@ -67,7 +65,7 @@ if(isset($_POST['login']))
                         <div class="checkbox">
                             
                             <label class="pull-right">
-                                <a href="forgot-password.php">Forgotten Password?</a>
+                                <a href="forgot-password.php">Forgot Password?</a>
                             </label>
 
                         </div>
