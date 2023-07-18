@@ -194,12 +194,12 @@ if (strlen($_SESSION['vpmsuid']==0)) {
 
             // Authenticate with Google Cloud
             $storage = new StorageClient([
-                'projectId' => 'your-google-project-id',
-                'keyFilePath' => 'key-file-name'
+                'projectId' => 'my-project-388313',
+                'keyFilePath' => 'my-project-388313-8d498336248d.json'
             ]);
 
             // The name of the bucket you're using
-            $bucketName = 'Your-bucket-name';
+            $bucketName = 'parkingsystem2023';
 
             // Upload the file to the bucket
             $bucket = $storage->bucket($bucketName);
