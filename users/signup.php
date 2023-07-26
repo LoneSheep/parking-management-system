@@ -1,15 +1,7 @@
 <?php
 
-// Turn on all error reporting
-error_reporting(E_ALL);
-
-// Alternatively you can use ini_set
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
 session_start();
-//error_reporting(0);
+error_reporting(0);
 include('includes/dbconnection.php');
 
 if(isset($_POST['submit']))
@@ -21,7 +13,7 @@ if(isset($_POST['submit']))
     $nip = isset($_POST['nip']) && !empty($_POST['nip']) ? $_POST['nip'] : NULL;
     $nim = isset($_POST['nim']) && !empty($_POST['nim']) ? $_POST['nim'] : NULL;
     $email=$_POST['email'];
-    $password=md5($_POST['password']);
+    $password=password_hash($_POST['password'], PASSWORD_DEFAULT);
     $ret=mysqli_query($con, "select Email from tblregusers where Email='$email'");
     $result=mysqli_fetch_array($ret);
     if($result>0){

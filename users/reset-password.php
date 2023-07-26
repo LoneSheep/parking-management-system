@@ -7,7 +7,7 @@ error_reporting(0);
 if(isset($_POST['submit']))
   {
     $email=$_SESSION['email'];
-    $password=md5($_POST['newpassword']);
+    $password=password_hash($_POST['newpassword'], PASSWORD_DEFAULT);
 
         $query=mysqli_query($con,"update tblregusers set Password='$password'  where  Email='$email'");
    if($query)
