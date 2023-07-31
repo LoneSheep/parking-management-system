@@ -1,7 +1,7 @@
 <?php
 session_start();
 error_reporting(0);
-include('includes/dbconnection.php');
+include('../dbconnection.php');
 if (strlen($_SESSION['vpmsaid']==0)) {
   header('location:logout.php');
   } else{
@@ -91,53 +91,45 @@ if (isset($_GET['reject'])) {
                             <strong class="card-title">Users Approval</strong>
                         </div>
                         <div class="card-body">
-                             <table class="table">
-                <thead>
-                                        <tr>
-                                            <tr>
-                  <th>NO</th>
-            
-                 
-                    <th>Name</th>
-                   <th>Vehicle Registration Number</th>
-                   <th>Email</th>
-                <th>Registration Date</th>
-                <th>Action</th>
-                </tr>
-                                        </tr>
-                                        </thead>
-               <?php
-$ret=mysqli_query($con,"select *from  tblregusers WHERE status = 'pending'");
-$cnt=1;
-while ($row=mysqli_fetch_array($ret)) {
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>NO</th>
+                                        <th>Name</th>
+                                        <th>NIM/NIP</th>
+                                        <th>Vehicle Registration Number</th>
+                                        <th>Email</th>
+                                        <th>Registration Date</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <?php
+                                    $ret=mysqli_query($con,"select *from  tblregusers WHERE status = 'pending'");
+                                    $cnt=1;
+                                    while ($row=mysqli_fetch_array($ret)) {
+                                ?>
+                                <tr>
+                                    <td><?php echo $cnt;?></td>
+                                    <td><?php echo $row['FirstName'];?> <?php echo $row['LastName'];?></td>
+                                    <!-- Display NIM/NIP based on which one is not null -->
+                                    <td><?php echo $row['NIM'] ? $row['NIM'] : $row['NIP']; ?></td>
+                                    <td><?php echo $row['LicenseNumber'];?></td>
+                                    <td><?php echo $row['Email'];?></td>
+                                    <td><?php echo $row['RegDate'];?></td>
+                                    <td>
+                                        <a href="approve-users.php?accept=<?php echo $row['ID'];?>" class="btn btn-success" onClick="return confirm('Are you sure you want to accept?')">Accept</a>
+                                        <a href="approve-users.php?reject=<?php echo $row['ID'];?>" class="btn btn-danger" onClick="return confirm('Are you sure you want to reject?')">Reject</a>
+                                    </td>
+                                </tr>
+                                <?php 
+                                    $cnt=$cnt+1;
+                                    }
+                                ?>
+                            </table>
+                        </div>
 
-?>
-              
-                <tr>
-                  <td><?php echo $cnt;?></td>
-            
-                 
-                  <td><?php  echo $row['FirstName'];?> <?php  echo $row['LastName'];?></td>
-                  <td><?php  echo $row['LicenseNumber'];?></td>
-                  <td><?php  echo $row['Email'];?></td>
-                  <td><?php  echo $row['RegDate'];?></td>
-                  <td>
-                    <a href="approve-users.php?accept=<?php echo $row['ID'];?>" class="btn btn-success" onClick="return confirm('Are you sure you want to accept?')">Accept</a>
-                    <a href="approve-users.php?reject=<?php echo $row['ID'];?>" class="btn btn-danger" onClick="return confirm('Are you sure you want to reject?')">Reject</a>
-                  </td>
-
-                </tr>
-                <?php 
-$cnt=$cnt+1;
-}?>
-              </table>
-
-                    </div>
                 </div>
             </div>
-
-
-
         </div>
     </div><!-- .animated -->
 </div><!-- .content -->

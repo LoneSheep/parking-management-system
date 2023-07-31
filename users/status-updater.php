@@ -1,6 +1,6 @@
 <?php
 // connect to database
-include('includes/dbconnection.php');
+include('../dbconnection.php');
 
 // Include the Cloud Storage library.
 require '../vendor/autoload.php';

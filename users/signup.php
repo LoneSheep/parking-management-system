@@ -2,8 +2,7 @@
 
 session_start();
 error_reporting(0);
-include('includes/dbconnection.php');
-
+include('../dbconnection.php');
 if(isset($_POST['submit']))
 {
     $fname=$_POST['firstname'];
@@ -95,7 +94,7 @@ if(isset($_POST['submit']))
                 </div>
 
                 <div class="login-form">
-                    <form method="post" onsubmit="return checkpass();">
+                    <form id="register-form" method="post" onsubmit="handleRegister(event);">
                          
                         <div class="form-group">
                             <label>First Name</label>

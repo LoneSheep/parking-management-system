@@ -1,7 +1,7 @@
 <?php
 session_start();
 error_reporting(0);
-include('includes/dbconnection.php');
+include('../dbconnection.php');
 require '../vendor/autoload.php';
 
 use Google\Cloud\Storage\StorageClient;

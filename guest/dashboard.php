@@ -1,5 +1,5 @@
 <?php
-include('includes/dbconnection.php');
+include('../dbconnection.php');
 require '../vendor/autoload.php';
 error_reporting(0);
 
