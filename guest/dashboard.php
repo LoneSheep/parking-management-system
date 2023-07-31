@@ -206,7 +206,7 @@ if (isset($_COOKIE['guestId'])) {
 
             // Authenticate with Google Cloud
             $storage = new StorageClient([
-                'projectId' => '../my-project-388313',
+                'projectId' => 'my-project-388313',
                 'keyFilePath' => '../my-project-388313-8d498336248d.json'
             ]);
 

@@ -32,7 +32,7 @@ if (strlen($_SESSION['vpmsaid']==0)) {
     // Authenticate with Google Cloud
     $storage = new StorageClient([
         'projectId' => 'my-project-388313',
-        'keyFilePath' => 'my-project-388313-8d498336248d.json'
+        'keyFilePath' => '../my-project-388313-8d498336248d.json'
     ]);
 
     // The name of the bucket you're using
