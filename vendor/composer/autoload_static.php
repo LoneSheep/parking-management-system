@@ -31,6 +31,7 @@ class ComposerStaticInitbf167ca8e475d34d212974d72dd0daa1
         'M' => 
         array (
             'Monolog\\' => 8,
+            'Midtrans\\' => 9,
         ),
         'G' => 
         array (
@@ -71,8 +72,8 @@ class ComposerStaticInitbf167ca8e475d34d212974d72dd0daa1
         ),
         'Psr\\Http\\Message\\' => 
         array (
-            0 => __DIR__ . '/..' . '/psr/http-message/src',
-            1 => __DIR__ . '/..' . '/psr/http-factory/src',
+            0 => __DIR__ . '/..' . '/psr/http-factory/src',
+            1 => __DIR__ . '/..' . '/psr/http-message/src',
         ),
         'Psr\\Http\\Client\\' => 
         array (
@@ -85,6 +86,10 @@ class ComposerStaticInitbf167ca8e475d34d212974d72dd0daa1
         'Monolog\\' => 
         array (
             0 => __DIR__ . '/..' . '/monolog/monolog/src/Monolog',
+        ),
+        'Midtrans\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/midtrans/midtrans-php/Midtrans',
         ),
         'GuzzleHttp\\Psr7\\' => 
         array (
