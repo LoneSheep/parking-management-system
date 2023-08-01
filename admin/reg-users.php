@@ -12,7 +12,7 @@ if (strlen($_SESSION['vpmsaid']==0)) {
   } else{
       
 // For deleting
-  if(isset($_GET['del']) && !empty($_GET['del'])) {
+if(isset($_GET['del']) && !empty($_GET['del'])) {
     $userID = $_GET['del'];
 
     // Fetch the user's QR code image URL
@@ -25,23 +25,37 @@ if (strlen($_SESSION['vpmsaid']==0)) {
     $qrImage = $user['qrimage'];
     $stmt->close();
 
-    // Parse the URL to get the file name
-    $qrImageComponents = parse_url($qrImage);
-    $qrImageFileName = basename($qrImageComponents['path']);
+    if ($qrImage !== null) {
+        // Parse the URL to get the file name
+        $qrImageComponents = parse_url($qrImage);
+        $qrImageFileName = basename($qrImageComponents['path']);
 
-    // Authenticate with Google Cloud
-    $storage = new StorageClient([
-        'projectId' => 'my-project-388313',
-        'keyFilePath' => '../my-project-388313-8d498336248d.json'
-    ]);
+        // Authenticate with Google Cloud
+        $storage = new StorageClient([
+            'projectId' => 'my-project-388313',
+            'keyFilePath' => '../my-project-388313-8d498336248d.json'
+        ]);
 
-    // The name of the bucket you're using
-    $bucketName = 'parkingsystem2023';
+        // The name of the bucket you're using
+        $bucketName = 'parkingsystem2023';
 
-    // Delete the file from the bucket
-    $bucket = $storage->bucket($bucketName);
-    $object = $bucket->object($qrImageFileName);
-    $object->delete();
+        // Delete the file from the bucket
+        $bucket = $storage->bucket($bucketName);
+        $object = $bucket->object($qrImageFileName);
+
+        try {
+            $object->delete();
+        } catch (Exception $e) {
+            // Do nothing if the file does not exist in the bucket
+        }
+    }
+
+    // Delete the user's payments from tblpayments
+    $sql = "DELETE FROM tblpayments WHERE user_id = ?";
+    $stmt = $con->prepare($sql);
+    $stmt->bind_param("i", $userID);
+    $stmt->execute();
+    $stmt->close();
 
     // Now you can delete the user from the database
     $sql = "DELETE FROM tblregusers WHERE ID = ?";
@@ -51,10 +65,9 @@ if (strlen($_SESSION['vpmsaid']==0)) {
     $stmt->close();
 
     $con->close();
-echo "<script>alert('Data Deleted');</script>";
-echo "<script>window.location.href='reg-users.php'</script>";
-          }
-
+    echo "<script>alert('Data Deleted');</script>";
+    echo "<script>window.location.href='reg-users.php'</script>";
+}
 
   ?>
 <!doctype html>
