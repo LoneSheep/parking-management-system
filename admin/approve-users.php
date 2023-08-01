@@ -85,52 +85,56 @@ if (isset($_GET['reject'])) {
         <div class="content">
             <div class="animated fadeIn">
                 <div class="row">
-                <div class="col-lg-12">
-                    <div class="card">
-                        <div class="card-header">
-                            <strong class="card-title">Users Approval</strong>
-                        </div>
-                        <div class="card-body">
-                            <table class="table">
-                                <thead>
+                    <div class="col-lg-15">
+                        <div class="card">
+                            <div class="card-header">
+                                <strong class="card-title">Users Approval</strong>
+                            </div>
+                            <div class="card-body">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>NO</th>
+                                            <th>Name</th>
+                                            <th>NIM/NIP</th>
+                                            <th>Vehicle Registration Number</th>
+                                            <th>Email</th>
+                                            <th>Registration Date</th>
+                                            <th>Payment Status</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <?php
+                                        // Join the tblregusers and tblpayments tables based on user ID
+                                        $ret=mysqli_query($con,"SELECT r.*, p.payment_status FROM tblregusers r LEFT JOIN tblpayments p ON r.ID = p.user_id WHERE r.status = 'pending'");
+                                        $cnt=1;
+                                        while ($row=mysqli_fetch_array($ret)) {
+                                    ?>
                                     <tr>
-                                        <th>NO</th>
-                                        <th>Name</th>
-                                        <th>NIM/NIP</th>
-                                        <th>Vehicle Registration Number</th>
-                                        <th>Email</th>
-                                        <th>Registration Date</th>
-                                        <th>Action</th>
+                                        <td><?php echo $cnt;?></td>
+                                        <td><?php echo $row['FirstName'];?> <?php echo $row['LastName'];?></td>
+                                        <!-- Display NIM/NIP based on which one is not null -->
+                                        <td><?php echo $row['NIM'] ? $row['NIM'] : $row['NIP']; ?></td>
+                                        <td><?php echo $row['LicenseNumber'];?></td>
+                                        <td><?php echo $row['Email'];?></td>
+                                        <td><?php echo $row['RegDate'];?></td>
+                                        <td><?php echo $row['payment_status'];?></td>
+                                        <td>
+                                            <a href="approve-users.php?accept=<?php echo $row['ID'];?>" class="btn btn-success" onClick="return confirm('Are you sure you want to accept?')">Accept</a>
+                                            <a href="approve-users.php?reject=<?php echo $row['ID'];?>" class="btn btn-danger" onClick="return confirm('Are you sure you want to reject?')">Reject</a>
+                                        </td>
                                     </tr>
-                                </thead>
-                                <?php
-                                    $ret=mysqli_query($con,"select *from  tblregusers WHERE status = 'pending'");
-                                    $cnt=1;
-                                    while ($row=mysqli_fetch_array($ret)) {
-                                ?>
-                                <tr>
-                                    <td><?php echo $cnt;?></td>
-                                    <td><?php echo $row['FirstName'];?> <?php echo $row['LastName'];?></td>
-                                    <!-- Display NIM/NIP based on which one is not null -->
-                                    <td><?php echo $row['NIM'] ? $row['NIM'] : $row['NIP']; ?></td>
-                                    <td><?php echo $row['LicenseNumber'];?></td>
-                                    <td><?php echo $row['Email'];?></td>
-                                    <td><?php echo $row['RegDate'];?></td>
-                                    <td>
-                                        <a href="approve-users.php?accept=<?php echo $row['ID'];?>" class="btn btn-success" onClick="return confirm('Are you sure you want to accept?')">Accept</a>
-                                        <a href="approve-users.php?reject=<?php echo $row['ID'];?>" class="btn btn-danger" onClick="return confirm('Are you sure you want to reject?')">Reject</a>
-                                    </td>
-                                </tr>
-                                <?php 
-                                    $cnt=$cnt+1;
-                                    }
-                                ?>
-                            </table>
+                                    <?php 
+                                        $cnt=$cnt+1;
+                                        }
+                                    ?>
+                                </table>
+                            </div>
                         </div>
-
+                    </div>
                 </div>
-            </div>
         </div>
+
     </div><!-- .animated -->
 </div><!-- .content -->
 
