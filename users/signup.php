@@ -23,7 +23,22 @@ if(isset($_POST['submit']))
         $query->bind_param("ssssisss", $fname, $lname, $licensenumber, $position, $nip, $nim, $email, $password);
         $query->execute();
         if ($query->affected_rows > 0) {
-            echo '<script>alert("You have successfully registered")</script>';
+            // Fetch the id of the user that was just inserted
+            $userId = $query->insert_id;
+
+            // Assume a default orderID and amount for the payment
+            $defaultOrderID = 'ORD-' . date('YmdHis'); // This could be any string unique to this order
+            $defaultAmount = 12000; // Set this to your actual default amount
+
+            // Insert into tblpayments
+            $payment_query = mysqli_prepare($con, "insert into tblpayments(user_id, orderID, amount, payment_status) values (?, ?, ?, 'PENDING')");
+            $payment_query->bind_param("isd", $userId, $defaultOrderID, $defaultAmount);
+            $payment_query->execute();
+            if ($payment_query->affected_rows > 0) {
+                echo '<script>alert("You have successfully registered")</script>';
+            } else {
+                echo '<script>alert("User registered but failed to create a payment record")</script>';
+            }
         }
         else {
             echo '<script>alert("Something Went Wrong. Please try again")</script>';

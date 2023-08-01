@@ -1,27 +1,30 @@
 <?php
 session_start();
-//error_reporting(0);
+error_reporting(0);
 include('../dbconnection.php');
+
+
 if(isset($_POST['login'])) {
     $emailcon = $_POST['emailcont'];
-    $password = md5($_POST['password']);
-    
-    $stmt = $con->prepare("SELECT ID, status FROM tblregusers WHERE Email = ? AND Password = ?");
-    $stmt->bind_param("ss", $emailcon, $password);
+    $password=$_POST['password'];
+    $stmt = $con->prepare("SELECT ID, Password, status FROM tblregusers WHERE Email = ?");
+    $stmt->bind_param("s", $emailcon);
     
     $stmt->execute();
     $result = $stmt->get_result();
     $ret = $result->fetch_array(MYSQLI_ASSOC);
 
     if ($ret) {
-        $status = $ret['status'];
-        if($status == "pending"){
-            echo "<script>alert('Your account is pending approval.');</script>";
-        } elseif($status == "rejected") {
-            echo "<script>alert('Your account has been rejected.');</script>";
+        if(password_verify($password, $ret['Password'])) {
+            $status = $ret['status'];
+            if($status == "rejected") {
+                echo "<script>alert('Your account has been rejected.');</script>";
+            } else {
+                $_SESSION['vpmsuid'] = $ret['ID'];
+                header('location:transaction.php');
+            }
         } else {
-            $_SESSION['vpmsuid'] = $ret['ID'];
-            header('location:dashboard.php');
+            echo "<script>alert('Invalid Details.');</script>";
         }
     } else {
         echo "<script>alert('Invalid Details.');</script>";

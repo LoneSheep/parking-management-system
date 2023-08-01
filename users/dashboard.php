@@ -1,8 +1,10 @@
 <?php
+
 session_start();
 error_reporting(0);
 include('../dbconnection.php');
-
+require '../vendor/autoload.php';
+use Google\Cloud\Storage\StorageClient;
 
 if (strlen($_SESSION['vpmsuid']==0)) {
   header('location:logout.php');
@@ -35,6 +37,13 @@ if (strlen($_SESSION['vpmsuid']==0)) {
 
     <link href="https://cdn.jsdelivr.net/npm/weathericons@2.1.0/css/weather-icons.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@3.9.0/dist/fullcalendar.min.css" rel="stylesheet" />
+
+    <!-- @TODO: replace SET_YOUR_CLIENT_KEY_HERE with your client key -->
+    <script type="text/javascript"
+      src="https://app.sandbox.midtrans.com/snap/snap.js"
+      data-client-key="SB-Mid-client-f3Rw1K0JIAaRq7Oy">
+    </script>
+    <!-- Note: replace with src="https://app.midtrans.com/snap/snap.js" for Production environment -->
 
    <style>
     #weatherWidget .currentDesc {
@@ -76,10 +85,7 @@ if (strlen($_SESSION['vpmsuid']==0)) {
 
 <body>
     
-   
-
         <?php include_once('includes/header.php');?>
-      
         <!-- Content -->
         <div class="content">
         <!-- Animated -->
@@ -151,10 +157,107 @@ if (strlen($_SESSION['vpmsuid']==0)) {
     </div>
 
         <!-- /.content -->
-        <div class="clearfix"></div>
-
         
-        <?php include_once('qr_generator.php');?>
+        
+        <div class="clearfix"></div>
+        <?php
+        $stmt = $con->prepare('SELECT status FROM tblregusers WHERE ID = ?');
+        $stmt->bind_param('i', $_SESSION['vpmsuid']);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $user = $result->fetch_assoc();
+
+        if ($user['status'] == 'pending') {
+            ?>
+            <div style="text-align:center">
+                <button id="pay-button" class="btn btn-success btn-flat m-b-30 m-t-30">PAY</button>
+            </div>
+
+            <?php
+          }
+        
+          if ($user['status'] == 'accepted') {
+
+            
+    
+            include "../phpqrcode/qrlib.php"; 
+
+            // Get user ID from session
+            $userID = $_SESSION['vpmsuid'];
+
+            // Generate a random token
+            $token = bin2hex(random_bytes(16)); // 16 bytes = 128 bits
+
+            // Fetch user's qrimage from the database
+            $sql = "SELECT qrimage, Status FROM tblregusers WHERE ID = ?";
+            $stmt = $con->prepare($sql);
+            $stmt->bind_param("i", $userID);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $user = $result->fetch_assoc();
+            $qrImage = $user['qrimage'];
+            $status = $user['Status'];
+            $stmt->close();
+
+            // If the user doesn't already have a QR image and status is "Accepted"
+            if (empty($qrImage)) {
+                $text = $token; 
+                $filename = uniqid().".png";
+                $ecc = 'H';
+                $pixel_Size = 7;
+                $frame_Size = 7;
+
+                // Generate QR code image data into a variable
+                ob_start();
+                QRcode::png($text, false, $ecc, $pixel_Size, $frame_Size);  // False as second argument to output to buffer instead of file
+                $imageData = ob_get_clean();
+
+                // Authenticate with Google Cloud
+                $storage = new StorageClient([
+                    'projectId' => 'my-project-388313',
+                    'keyFilePath' => '../my-project-388313-8d498336248d.json'
+                ]);
+
+                // The name of the bucket you're using
+                $bucketName = 'parkingsystem2023';
+
+                // Upload the file to the bucket
+                $bucket = $storage->bucket($bucketName);
+                $bucket->upload(
+                    $imageData,  // Use $imageData instead of file
+                    [
+                        'name' => $filename,  // Name the object with the $filename
+                        'metadata' => [
+                            'contentType' => 'image/png',  // Set content type so GCS knows it's an image
+                        ],
+                    ]
+                );
+
+                // Generate a public URL for the object
+                $qrImage = sprintf('https://storage.googleapis.com/%s/%s', $bucketName, $filename);
+
+                // prepare sql statement
+                $sql = "UPDATE tblregusers SET qrimage = ?, token = ? WHERE ID = ?";
+
+                // create a prepared statement
+                $stmt = $con->prepare($sql);
+
+                // bind parameters
+                $stmt->bind_param("ssi", $qrImage, $token, $userID);
+
+                // execute the query
+                $stmt->execute();
+
+                // close the statement
+                $stmt->close();
+            }
+
+            // close the connection
+            $con->close();
+
+            echo "<center><img src='".$qrImage."'></center>";
+          }
+        ?>                              
 
 
         <!-- Footer -->
@@ -187,6 +290,27 @@ if (strlen($_SESSION['vpmsuid']==0)) {
     <script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/moment.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@3.9.0/dist/fullcalendar.min.js"></script>
     <script src="../admin/assets/js/init/fullcalendar-init.js"></script>
+    <script type="text/javascript">
+        var payButton = document.getElementById('pay-button');
+        payButton.addEventListener('click', function () {
+            window.snap.pay('<?php echo $_SESSION['snapToken']; ?>', {
+            onSuccess: function(result){
+                alert("payment success!"); console.log(result);
+            },
+            onPending: function(result){
+                alert("wating your payment!"); console.log(result);
+            },
+            onError: function(result){
+                alert("payment failed!"); console.log(result);
+            },
+            onClose: function(){
+                alert('you closed the popup without finishing the payment');
+            }
+            })
+    });
+    </script>
+
+
 
     <!--Local Stuff-->
     <script>

@@ -8,8 +8,8 @@ if (strlen($_SESSION['vpmsuid']==0)) {
 if(isset($_POST['submit']))
 {
 $userid=$_SESSION['vpmsuid'];
-$cpassword=md5($_POST['currentpassword']);
-$newpassword=md5($_POST['newpassword']);
+$cpassword=password_hash($_POST['currentpassword'],PASSWORD_DEFAULT);
+$newpassword=password_hash($_POST['newpassword'],PASSWORD_DEFAULT);
 $query1=mysqli_query($con,"select ID from tblregusers where ID='$userid' and   Password='$cpassword'");
 $row=mysqli_fetch_array($query1);
 if($row>0){
