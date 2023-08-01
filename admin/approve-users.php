@@ -10,7 +10,7 @@ if($_GET['del']){
 $catid=$_GET['del'];
 mysqli_query($con,"delete from tblregusers where ID ='$catid'");
 echo "<script>alert('Data Deleted');</script>";
-echo "<script>window.location.href='aprrove-users.php'</script>";
+echo "<script>window.location.href='approve-users.php'</script>";
           }
 if (isset($_GET['accept'])) {
     $userid = intval($_GET['accept']);
