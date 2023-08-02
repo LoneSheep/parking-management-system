@@ -202,7 +202,9 @@ if (isset($_COOKIE['guestId'])) {
             // Generate QR code image data into a variable
             ob_start();
             QRcode::png($text, false, $ecc, $pixel_Size, $frame_Size);  // False as second argument to output to buffer instead of file
-            $imageData = ob_get_clean();
+            $imageData = ob_get_contents();
+                // Clean (erase) the output buffer and turn off output buffering
+            ob_end_clean();
 
             // Authenticate with Google Cloud
             $storage = new StorageClient([
