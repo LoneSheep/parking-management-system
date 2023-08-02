@@ -31,9 +31,11 @@ if(isset($_POST['login'])) {
                 if ($paymentData && $paymentData['payment_status'] == 'DONE') {
                     // if payment is done, redirect to dashboard
                     header('location:dashboard.php');
+                    exit;
                 } else {
                     // if payment is not done, redirect to transaction
                     header('location:transaction.php');
+                    exit;
                 }
             }
         } else {
