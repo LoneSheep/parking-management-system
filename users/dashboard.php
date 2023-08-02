@@ -207,10 +207,14 @@ if (strlen($_SESSION['vpmsuid']==0)) {
                 $pixel_Size = 7;
                 $frame_Size = 7;
 
-                // Generate QR code image data into a variable
+                // Start output buffering
                 ob_start();
+                // Generate the QR code
                 QRcode::png($text, false, $ecc, $pixel_Size, $frame_Size);  // False as second argument to output to buffer instead of file
-                $imageData = ob_get_clean();
+                // Capture the output into a variable
+                $imageData = ob_get_contents();
+                // Clean (erase) the output buffer and turn off output buffering
+                ob_end_clean();
 
                 // Authenticate with Google Cloud
                 $storage = new StorageClient([
@@ -218,7 +222,7 @@ if (strlen($_SESSION['vpmsuid']==0)) {
                     'keyFilePath' => '../my-project-388313-8d498336248d.json'
                 ]);
 
-                // The name of the bucket you're using
+                // The name for the new bucket
                 $bucketName = 'parkingsystem2023';
 
                 // Upload the file to the bucket
@@ -256,7 +260,7 @@ if (strlen($_SESSION['vpmsuid']==0)) {
             $con->close();
 
             echo "<center><img src='".$qrImage."'></center>";
-          }
+        }
         ?>                              
 
 
