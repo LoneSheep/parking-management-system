@@ -9,7 +9,7 @@ if(isset($_POST['login'])) {
     $password=$_POST['password'];
     $stmt = $con->prepare("SELECT ID, Password, status FROM tblregusers WHERE Email = ?");
     $stmt->bind_param("s", $emailcon);
-    
+
     $stmt->execute();
     $result = $stmt->get_result();
     $ret = $result->fetch_array(MYSQLI_ASSOC);
@@ -21,7 +21,20 @@ if(isset($_POST['login'])) {
                 echo "<script>alert('Your account has been rejected.');</script>";
             } else {
                 $_SESSION['vpmsuid'] = $ret['ID'];
-                header('location:transaction.php');
+
+                // Check if user has a completed payment
+                $stmt = $con->prepare("SELECT payment_status FROM tblpayments WHERE user_id = ?");
+                $stmt->bind_param("i", $_SESSION['vpmsuid']);
+                $stmt->execute();
+                $paymentResult = $stmt->get_result();
+                $paymentData = $paymentResult->fetch_array(MYSQLI_ASSOC);
+                if ($paymentData && $paymentData['payment_status'] == 'DONE') {
+                    // if payment is done, redirect to dashboard
+                    header('location:dashboard.php');
+                } else {
+                    // if payment is not done, redirect to transaction
+                    header('location:transaction.php');
+                }
             }
         } else {
             echo "<script>alert('Invalid Details.');</script>";
