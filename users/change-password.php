@@ -7,19 +7,19 @@ if (strlen($_SESSION['vpmsuid']==0)) {
   } else{
 if(isset($_POST['submit']))
 {
-$userid=$_SESSION['vpmsuid'];
-$cpassword=password_hash($_POST['currentpassword'],PASSWORD_DEFAULT);
-$newpassword=password_hash($_POST['newpassword'],PASSWORD_DEFAULT);
-$query1=mysqli_query($con,"select ID from tblregusers where ID='$userid' and   Password='$cpassword'");
-$row=mysqli_fetch_array($query1);
-if($row>0){
-$ret=mysqli_query($con,"update tblregusers set Password='$newpassword' where ID='$userid'");
-
-echo '<script>alert("Your password successully changed.")</script>';
-} else {
-echo '<script>alert("Your current password is wrong.")</script>';
-
-}
+    $userid = $_SESSION['vpmsuid'];
+    $cpassword = $_POST['currentpassword'];  
+    $newpassword = password_hash($_POST['newpassword'], PASSWORD_DEFAULT);
+    
+    $query1 = mysqli_query($con, "SELECT Password FROM tblregusers WHERE ID='$userid'");
+    $row = mysqli_fetch_array($query1);
+    
+    if($row && password_verify($cpassword, $row['Password'])){  // Use password_verify to check
+        $ret = mysqli_query($con, "UPDATE tblregusers SET Password='$newpassword' WHERE ID='$userid'");
+        echo '<script>alert("Your password successfully changed.")</script>';
+    } else {
+        echo '<script>alert("Your current password is wrong.")</script>';
+    }
 
 } 
 
