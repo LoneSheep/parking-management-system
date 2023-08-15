@@ -3,6 +3,12 @@
 session_start();
 error_reporting(0);
 include('../dbconnection.php');
+require '../vendor/autoload.php'; 
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+
 if(isset($_POST['submit']))
 {
     $fname=$_POST['firstname'];
@@ -35,11 +41,56 @@ if(isset($_POST['submit']))
             $payment_query->bind_param("isd", $userId, $defaultOrderID, $defaultAmount);
             $payment_query->execute();
             if ($payment_query->affected_rows > 0) {
-                echo '<script>alert("You have successfully registered")</script>';
-                header("Location: login.php");
-            } else {
-                echo '<script>alert("User registered but failed to create a payment record")</script>';
-            }
+                
+                $mail = new PHPMailer(true);
+ 
+                try {
+                    //Enable verbose debug output
+                    $mail->SMTPDebug = 0;//SMTP::DEBUG_SERVER;
+        
+                    //Send using SMTP
+                    $mail->isSMTP();
+        
+                    //Set the SMTP server to send through
+                    $mail->Host = 'smtp.gmail.com';
+        
+                    //Enable SMTP authentication
+                    $mail->SMTPAuth = true;
+        
+                    //SMTP username
+                    $mail->Username = 'yuarisarham@gmail.com';
+        
+                    //SMTP password
+                    $mail->Password = 'jugqqtlaifoqccgi';
+        
+                    //Enable TLS encryption;
+                    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+        
+                    //TCP port to connect to, use 465 for `PHPMailer::ENCRYPTION_SMTPS` above
+                    $mail->Port = 587;
+        
+                    //Recipients
+                    $mail->setFrom('pnjparking@gmail.com', 'PNJ PARKING');
+        
+                    //Add a recipient
+                    $mail->addAddress($email, $fname . ' ' . $lname);
+        
+                    $mail->Subject = 'Registration Successful';
+                    $mail->Body = 'Dear ' . $fname . ', your registration was successful. Thank you for joining us!';
+        
+                    $mail->send();
+                    
+                } catch (Exception $e) {
+                        echo '<script>alert("You have successfully registered, but there was an issue sending the notification email.")</script>';
+                        echo 'Mailer Error: ' . $mail->ErrorInfo;
+                    }
+
+                    header("Location: login.php");
+                    echo '<script>alert("You have successfully registered")</script>';
+
+                    } else {
+                        echo '<script>alert("User registered but failed to create a payment record")</script>';
+                    }
         }
         else {
             echo '<script>alert("Something Went Wrong. Please try again")</script>';
