@@ -36,6 +36,7 @@ if(isset($_POST['submit']))
             $payment_query->execute();
             if ($payment_query->affected_rows > 0) {
                 echo '<script>alert("You have successfully registered")</script>';
+                header("Location: login.php");
             } else {
                 echo '<script>alert("User registered but failed to create a payment record")</script>';
             }

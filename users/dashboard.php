@@ -110,7 +110,7 @@ if (strlen($_SESSION['vpmsuid']==0)) {
 
                     <?php
                     // Define the total number of parking spaces
-                    $total_parking_spaces = 20;
+                    $total_parking_spaces = 50;
 
                     // Get the count from tblregusers where vStatus is 'IN'
                     $query_regusers = mysqli_query($con, "SELECT ID FROM tblregusers WHERE vStatus = 'IN'");

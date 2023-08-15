@@ -7,10 +7,10 @@
                     </li>
                    
                     <li class="menu-item-has-children dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-th"></i>Manage Vehicle</a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-th"></i>View Vehicle Status</a>
                         <ul class="sub-menu children dropdown-menu">
-                            <li><i class="menu-icon fa fa-th"></i><a href="manage-incomingvehicle.php">Manage In  Vehicle</a></li>
-                            <li><i class="menu-icon fa fa-th"></i><a href="manage-outgoingvehicle.php">Manage Out Vehicle</a>
+                            <li><i class="menu-icon fa fa-th"></i><a href="manage-incomingvehicle.php">View In  Vehicle</a></li>
+                            <li><i class="menu-icon fa fa-th"></i><a href="manage-outgoingvehicle.php">View Out Vehicle</a>
                            
                         </li>
 
