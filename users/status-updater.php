@@ -5,9 +5,9 @@ require '../vendor/autoload.php';
 use Google\Cloud\Storage\StorageClient;
 
 // Cloud Storage settings
-$projectId = 'my-project-388313';
-$keyFilePath = '../my-project-388313-8d498336248d.json';
-$bucketName = 'parkingsystem2023';
+$projectId = 'your-project-id';
+$keyFilePath = 'path/to/your/credentials.json';
+$bucketName = 'your-bucket-name';
 
 // Create a Cloud Storage client.
 $storage = new StorageClient([
