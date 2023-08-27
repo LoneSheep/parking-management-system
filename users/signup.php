@@ -56,12 +56,12 @@ if(isset($_POST['submit']))
         
                     //Enable SMTP authentication
                     $mail->SMTPAuth = true;
-        
+                    <!-- @TODO: replace with your username and password -->
                     //SMTP username
-                    $mail->Username = 'yuarisarham@gmail.com';
-        
+                    $mail->Username = 'your_email@gmail.com';
+                    
                     //SMTP password
-                    $mail->Password = 'jugqqtlaifoqccgi';
+                    $mail->Password = 'your_password';
         
                     //Enable TLS encryption;
                     $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
@@ -70,7 +70,7 @@ if(isset($_POST['submit']))
                     $mail->Port = 587;
         
                     //Recipients
-                    $mail->setFrom('pnjparking@gmail.com', 'PNJ PARKING');
+                    $mail->setFrom('your_email@gmail.com', 'Your Name');
         
                     //Add a recipient
                     $mail->addAddress($email, $fname . ' ' . $lname);
