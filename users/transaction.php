@@ -10,7 +10,7 @@ if (!isset($_SESSION['vpmsuid'])) {
 $userId = $_SESSION['vpmsuid'];
 
 // Set your Merchant Server Key
-Midtrans\Config::$serverKey = 'SB-Mid-server-kQCwgJQAfjbDa0DpxyAyo-oH';
+Midtrans\Config::$serverKey = 'YOUR_SERVER_KEY';
 // Set to Development/Sandbox Environment
 Midtrans\Config::$isProduction = false;
 
