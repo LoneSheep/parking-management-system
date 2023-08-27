@@ -41,7 +41,7 @@ if (strlen($_SESSION['vpmsuid']==0)) {
     <!-- @TODO: replace SET_YOUR_CLIENT_KEY_HERE with your client key -->
     <script type="text/javascript"
       src="https://app.sandbox.midtrans.com/snap/snap.js"
-      data-client-key="SB-Mid-client-f3Rw1K0JIAaRq7Oy">
+      data-client-key="SET_YOUR_CLIENT_KEY_HERE">
     </script>
     <!-- Note: replace with src="https://app.midtrans.com/snap/snap.js" for Production environment -->
 
@@ -216,14 +216,15 @@ if (strlen($_SESSION['vpmsuid']==0)) {
                 // Clean (erase) the output buffer and turn off output buffering
                 ob_end_clean();
 
+                <!-- @TODO: replace projectId with your Google Cloud Project ID and replace keyFilePath with your own Service Key path  -->
                 // Authenticate with Google Cloud
                 $storage = new StorageClient([
-                    'projectId' => 'my-project-388313',
-                    'keyFilePath' => '../my-project-388313-8d498336248d.json'
+                    'projectId' => 'your-project-id',
+                    'keyFilePath' => 'path/to/your/credentials.json'
                 ]);
-
+                <!-- @TODO: insert your Cloud Storage Bucket name -->
                 // The name for the new bucket
-                $bucketName = 'parkingsystem2023';
+                $bucketName = 'your-bucket-name';
 
                 // Upload the file to the bucket
                 $bucket = $storage->bucket($bucketName);
