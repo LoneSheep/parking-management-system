@@ -30,14 +30,16 @@ if(isset($_GET['del']) && !empty($_GET['del'])) {
         $qrImageComponents = parse_url($qrImage);
         $qrImageFileName = basename($qrImageComponents['path']);
 
+        <!-- @TODO: replace projectId with your Google Cloud Project ID and replace keyFilePath with your own Service Key path  -->
         // Authenticate with Google Cloud
         $storage = new StorageClient([
-            'projectId' => 'my-project-388313',
-            'keyFilePath' => '../my-project-388313-8d498336248d.json'
+        'projectId' => 'your-project-id',
+        'keyFilePath' => 'path/to/your/credentials.json'
         ]);
 
-        // The name of the bucket you're using
-        $bucketName = 'parkingsystem2023';
+        <!-- @TODO: insert your Cloud Storage Bucket name -->
+        // The name for the new bucket
+        $bucketName = 'your-bucket-name';
 
         // Delete the file from the bucket
         $bucket = $storage->bucket($bucketName);
